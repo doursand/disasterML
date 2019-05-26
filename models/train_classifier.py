@@ -21,7 +21,7 @@ from sklearn.model_selection import GridSearchCV
 
 
 def load_data(database_filepath):
-     '''
+    '''
     Load data from database
     Input:
         database_filepath: str. Sqlite database path
@@ -31,10 +31,15 @@ def load_data(database_filepath):
         categories_list: List. list of all categories   
     '''
     
-    engine = create_engine('sqlite:///disasterdb.db')
-    
+    engine = create_engine('sqlite:///' + str(database_filepath))
     df = pd.read_sql_table('disaster',con=engine)
-    categories_list = list(df.columns[:4])
+    categories_list = ['related-1', 'request-0', 'offer-0', 'aid_related-0', 'medical_help-0', 'medical_products-0', 
+        'search_and_rescue-0', 'security-0', 'military-0', 'child_alone-0', 'water-0', 'food-0', 
+        'shelter-0', 'clothing-0', 'money-0', 'missing_people-0', 'refugees-0', 'death-0', 'other_aid-0', 
+        'infrastructure_related-0', 'transport-0', 'buildings-0', 'electricity-0', 'tools-0', 'hospitals-0', 
+        'shops-0', 'aid_centers-0', 'other_infrastructure-0', 'weather_related-0', 'floods-0', 'storm-0', 
+        'fire-0', 'earthquake-0', 'cold-0', 'other_weather-0', 'direct_report-0']
+        #list(df.columns[:4])
     X = df['message']
     Y = df[categories_list]
     return X, Y, categories_list
@@ -55,11 +60,8 @@ def tokenize(text):
     
     #lemmatize
     lemmatizer = WordNetLemmatizer()
+    clean_tokens = [lemmatizer.lemmatize(tok).lower().strip() for tok in tokens]
     
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
     return clean_tokens
     
 
@@ -78,10 +80,8 @@ def build_model():
     parameters = {
                  
                  'vect__max_df': (0.5, 1.0),
-                 'vect__max_features': (None, 500, 1000),
                  'tfidf__use_idf': (True, False),
                  'multiclf__estimator__n_estimators': [10, 20],
-                 'multiclf__estimator__min_samples_split': [0.5, 1.0],
                  'multiclf__estimator__criterion': ['entropy', 'gini']
              }
 
@@ -90,7 +90,11 @@ def build_model():
     
 
 def evaluate_model(model, X_test, Y_test, category_names):
-    pass
+
+    Y_pred = model.predict(X_test)
+    
+    print(classification_report(Y_test.iloc[:,1:].values, np.array([x[1:] for x in Y_pred]),target_names=category_names))
+
 
 
 def save_model(model, model_filepath):
