@@ -18,6 +18,7 @@ from nltk.corpus import stopwords
 nltk.download('stopwords')
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
+import pickle
 
 
 def load_data(database_filepath):
