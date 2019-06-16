@@ -12,7 +12,7 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.pipeline import Pipeline
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import train_test_split
 from nltk.corpus import stopwords
 nltk.download('stopwords')
@@ -41,8 +41,8 @@ def load_data(database_filepath):
         'shops-0', 'aid_centers-0', 'other_infrastructure-0', 'weather_related-0', 'floods-0', 'storm-0', 
         'fire-0', 'earthquake-0', 'cold-0', 'other_weather-0', 'direct_report-0']
         #list(df.columns[:4])
-    X = df['message']
-    Y = df[categories_list]
+    X = df['message'].values
+    Y = df[categories_list].values
     return X, Y, categories_list
 
 def tokenize(text):
@@ -76,25 +76,21 @@ def build_model():
     pipeline = Pipeline([
     ('vect', CountVectorizer(tokenizer=tokenize)),
     ('tfidf', TfidfTransformer()),
-    ('multiclf', MultiOutputClassifier(estimator=RandomForestClassifier()))
+    ('multiclf', MultiOutputClassifier(estimator=AdaBoostClassifier()))
     ])
     parameters = {
-                 
-                 'vect__max_df': (0.5, 1.0),
-                 'tfidf__use_idf': (True, False),
-                 'multiclf__estimator__n_estimators': [10, 20],
-                 'multiclf__estimator__criterion': ['entropy', 'gini']
-             }
-
-    cv = GridSearchCV(pipeline, param_grid=parameters)
+        'multiclf__estimator__n_estimators': [50,100],
+        'multiclf__estimator__algorithm': ['SAMME', 'SAMME.R']
+    }
+    cv = GridSearchCV(pipeline, param_grid=parameters,cv=2)
     return cv
     
 
 def evaluate_model(model, X_test, Y_test, category_names):
-
     Y_pred = model.predict(X_test)
-    
-    print(classification_report(Y_test.iloc[:,1:].values, np.array([x[1:] for x in Y_pred]),target_names=category_names))
+    for category in range(len(category_names)):
+        print('category: {}'.format(category_names[category]))
+        print(classification_report(Y_test[:, category], Y_pred[:, category]))
 
 
 
@@ -128,13 +124,11 @@ def main():
         save_model(model, model_filepath)
 
         print('Trained model saved!')
-
     else:
         print('Please provide the filepath of the disaster messages database '\
               'as the first argument and the filepath of the pickle file to '\
               'save the model to as the second argument. \n\nExample: python '\
               'train_classifier.py ../data/DisasterResponse.db classifier.pkl')
-
-
+ 
 if __name__ == '__main__':
     main()
