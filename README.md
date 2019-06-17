@@ -28,5 +28,7 @@ The source of the messages used to train the machine learning model are real mes
 
 3. Go to http://0.0.0.0:3001/
 
+### Credits
 
+All the credits goes to Udacity and to Figure8 for providing the framework as well as the data to train this machine learning model
 
