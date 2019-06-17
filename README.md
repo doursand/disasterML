@@ -14,7 +14,7 @@ The source of the messages used to train the machine learning model are real mes
 - flask
 - plotly
 
-### Usage
+### How to use it ?
 
 1. Run the following commands in the project's root directory to set up your database and model.
 
@@ -27,3 +27,7 @@ The source of the messages used to train the machine learning model are real mes
     `python run.py`
 
 3. Go to http://0.0.0.0:3001/
+
+Once all is properly configured, here is how it should look like
+
+
