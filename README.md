@@ -30,5 +30,5 @@ The source of the messages used to train the machine learning model are real mes
 
 ### Credits
 
-All the credits goes to Udacity and to Figure8 for providing the framework as well as the data to train this machine learning model
+All the credits go to Udacity and to Figure8 for providing the framework as well as the data to train this machine learning model
 
