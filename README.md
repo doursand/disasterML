@@ -18,16 +18,15 @@ The source of the messages used to train the machine learning model are real mes
 
 1. Run the following commands in the project's root directory to set up your database and model.
 
-    - To run ETL pipeline that cleans data and stores in database
+    - To run ETL pipeline that cleans data and stores in database (sqlite database)
         `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
-    - To run ML pipeline that trains classifier and saves
+    - To run ML pipeline that trains classifier and saves the model as a pickle file
         `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
 
-2. Run the following command in the app's directory to run your web app.
+2. Run the following command in the app's directory to run your web app (using flask and plotly)
     `python run.py`
 
 3. Go to http://0.0.0.0:3001/
 
-Once all is properly configured, here is how it should look like
 
 
