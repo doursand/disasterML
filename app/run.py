@@ -10,6 +10,7 @@ from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
+import pickle
 
 
 app = Flask(__name__)
@@ -32,7 +33,6 @@ df = pd.read_sql_table('disaster', engine)
 # load model
 model = joblib.load("../models/classifier.pkl")
 
-
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
@@ -42,6 +42,17 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    
+    #top 10 categories
+    category_columns = df.columns[4:]
+    top10_categories = df[category_columns].sum().sort_values(ascending=False)[:10]
+    
+    #Top 10 most critical messages
+    df_critical = df.drop(labels=['id','original','genre'],axis=1)
+    df_critical['total']=df_critical.iloc[:,1:].sum(axis=1)
+    df_critical = df_critical.sort_values(by='total',ascending=False)[:10]
+    df_critical_msg = df_critical['message'][:10]
+    df_critical_val = df_critical['total'][:10]
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -61,6 +72,43 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+         {
+            'data': [
+                Bar(
+                    x=category_columns,
+                    y=top10_categories
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 10 categories',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "categories"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=df_critical_msg,
+                    y=df_critical_val,
+                    orientation = 'v'
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 10 most critical messages',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "message"
                 }
             }
         }

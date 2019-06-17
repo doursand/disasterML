@@ -50,7 +50,8 @@ def tokenize(text):
     Process and tokenize text
     Input:
         text: str. Sqlite database path
-    
+    Output:
+        clean_tokens. list of cleaned tokens created from text
     '''
     # Normalize Text, lower case
     text = re.sub(r"[^a-zA-Z0-9]", ' ', text.lower())
@@ -70,7 +71,8 @@ def tokenize(text):
 def build_model():
     '''
     Build the pipeline for the ML model. Model is optimized thru gridsearch
-    
+    Output:
+       cv. model optimized thru GridSearchCV
     
     '''
     pipeline = Pipeline([
@@ -87,6 +89,15 @@ def build_model():
     
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    '''
+    evaluate the model, providing f1 score and accuracy of the model for each category
+        Input:
+            model: model
+            X_test: X_test 
+            Y_test: Y_test
+            category_names: list of category from db
+    '''
+    
     Y_pred = model.predict(X_test)
     for category in range(len(category_names)):
         print('category: {}'.format(category_names[category]))
