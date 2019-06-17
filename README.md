@@ -1,6 +1,21 @@
 # Disaster Response Pipeline Project
 
-### Instructions:
+### Summary:
+This project is part of the Udacity data scientist nano degree done in partnership with Figure8. 
+The objective is to build a NLP machine learning model accessible thru a web app to automatically classify messages describing disaster events. 
+The source of the messages used to train the machine learning model are real messages coming from disaster events.
+
+### Requirements:
+
+- sqlalchemy
+- numpy
+- pandas
+- sklearn
+- flask
+- plotly
+
+### Usage
+
 1. Run the following commands in the project's root directory to set up your database and model.
 
     - To run ETL pipeline that cleans data and stores in database
